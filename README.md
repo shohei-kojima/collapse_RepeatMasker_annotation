@@ -23,6 +23,12 @@ GRCm38.p6.genome.fa \
 The script `collapse_RM_annotation.py` will remove overlapping repeat annotations based on bit score.
 The command below will generate two files: `GRCm38.p6.genome.fa.out.collapsed.gtf.gz` and `GRCm38.p6.genome.fa.out.collapsed.bed.gz`.
 The `.gtf.gz` file can be used for counting reads mapping to repeat anotations (e.g., STAR, featureCount).  
+  
+The two flags below are required. Please specify the input `.fa.out` file with the `-i` flag, and output file basename with the `-o` flag.
+  
+- `-i [input.fa.out]`  
+- `-o [output basename]`
+  
 ```
 python collapse_RM_annotation.py \
 -i ./RM_out/GRCm38.p6.genome.fa.out \
