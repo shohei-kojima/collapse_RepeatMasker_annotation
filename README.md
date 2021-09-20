@@ -24,7 +24,7 @@ The script `collapse_RM_annotation.py` will remove overlapping repeat annotation
 The command below will generate two files: `GRCm38.p6.genome.fa.out.collapsed.gtf.gz` and `GRCm38.p6.genome.fa.out.collapsed.bed.gz`.
 The `.gtf.gz` file can be used for counting reads mapping to repeat anotations (e.g., STAR, featureCount).  
   
-The two flags below are required. Please specify the input `.fa.out` file with the `-i` flag, and output file basename with the `-o` flag.
+The two flags below are required. Please specify an input `.fa.out` file with the `-i` flag, and an output file basename with the `-o` flag.
   
 - `-i [input.fa.out]`  
 - `-o [output basename]`
@@ -43,8 +43,8 @@ Each annotation in this GTF file will be composed of one gene, one transcript, a
 `gene_id` in the attribution field will be `RM_n`.`repeat`.`repeat_class`.`original_id`, where `n` is the serial numbering, `repeat` is the 10th column of the input `.fa.out` file, `repeat_class` is the 11 th column of the input `.fa.out` file, and `original_id` is the 15th column of the input `.fa.out` file.  
 
 - `.bed.gz`  
-Each annotation in this GTF file will be composed of one gene, one transcript, and one exon.  
-`gene_id` in the attribution field will be `RM_n`.`repeat`.`repeat_class`.`original_id`, which is the same naming convention as the `gene_id` in `.gtf.gz` file.  
+The 4th column (name field) in the bed file will be `RM_n`.`repeat`.`repeat_class`.`original_id`, which is the same naming convention as the `gene_id` in `.gtf.gz` file.  
+The 5th column (score filed) will have bit score (1st column of the input `.fa.out` file).  
   
 ### Options that affect output results
 - `-keep_simple_repeat`  

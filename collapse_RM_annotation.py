@@ -185,9 +185,9 @@ def collapse(tmp, chr, gft_id_n):
     for _rep in connected:  # start, end, score, info
         strand,rep_name=_rep.info
         gft_id='RM_%s.%s' % (gft_id_n, rep_name)
-        gene_attr='gene_id "%s"; gene_name "%s"; score "%s";' % (gft_id, gft_id, _rep.score)
-        tran_attr='gene_id "%s"; transcript_id "t_%s"; gene_name "%s"; score "%s";' % (gft_id, gft_id, gft_id, _rep.score)
-        exon_attr='gene_id "%s"; transcript_id "t_%s"; gene_name "%s"; exon_number 1; exon_id "e_%s"; score "%s";' % (gft_id, gft_id, gft_id, gft_id, _rep.score)
+        gene_attr='gene_id "%s"; gene_name "%s"; bit_score "%s";' % (gft_id, gft_id, _rep.score)
+        tran_attr='gene_id "%s"; transcript_id "t_%s"; gene_name "%s"; bit_score "%s";' % (gft_id, gft_id, gft_id, _rep.score)
+        exon_attr='gene_id "%s"; transcript_id "t_%s"; gene_name "%s"; exon_number 1; exon_id "e_%s"; bit_score "%s";' % (gft_id, gft_id, gft_id, gft_id, _rep.score)
         attrs=(gene_attr, tran_attr, exon_attr)
         for annot,attr in zip(annots, attrs):
             l=[chr, 'RepeatMasker', annot, str(_rep.start), str(_rep.end), '.', strand, '.', attr]
