@@ -190,7 +190,7 @@ def collapse(tmp, chr, gft_id_n):
         exon_attr='gene_id "%s"; transcript_id "t_%s"; gene_name "%s"; exon_number 1; exon_id "e_%s"; bit_score "%s";' % (gft_id, gft_id, gft_id, gft_id, _rep.score)
         attrs=(gene_attr, tran_attr, exon_attr)
         for annot,attr in zip(annots, attrs):
-            l=[chr, 'RepeatMasker', annot, str(_rep.start), str(_rep.end), '.', strand, '.', attr]
+            l=[chr, 'RepeatMasker', annot, str(_rep.start + 1), str(_rep.end), '.', strand, '.', attr]
             gtf_lines.append('\t'.join(l) +'\n')
         l=[chr, str(_rep.start), str(_rep.end), gft_id, str(_rep.score), strand]
         bed_lines.append('\t'.join(l) +'\n')
