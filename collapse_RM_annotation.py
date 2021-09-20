@@ -3,7 +3,7 @@
 '''
 Author: Shohei Kojima @ RIKEN
 Usage: python %prog -i in.fa.out -o out
-Requirement: Python 3.7 or later
+Requirement: Python 3.6 or later
 Licence: see LICENSE file
 '''
 
@@ -18,7 +18,7 @@ description='''
     In such case, it is preferable to use non-overlapping TE annotations. This script makes
     non-overlapping TE annotations by removing TEs with lower bit score. Processing of one file
     (e.g. hg38, mm10) requires ~3 min and ~100 MB RAM. This script only uses single thread.
-    Requirement: Python 3.7 or later
+    Requirement: Python 3.6 or later
 '''
 
 # args
