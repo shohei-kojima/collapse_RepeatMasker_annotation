@@ -37,6 +37,7 @@ Each annotation in this GTF file will be composed of one gene, one transcript, a
 `gene_id` in the attribution field will be `RM_n`.`repeat`.`repeat_class`.`original_id`, which is the same naming convention as the `gene_id` in `.gtf.gz` file.  
   
 ### Options that affect output results
+- `-keep_simple_repeat`  
 By default, the script will remove "Simple_repeat" and "Low_complexity" from output files.  
 If you want to include such annotations, please add the `-keep_simple_repeat` option.  
 ```
@@ -46,6 +47,7 @@ python collapse_RM_annotation.py \
 -keep_simple_repeat
 ```
   
+- `-gap [int]`  
 Sometimes, one TE annotation will be split into several fragments in the `.fa.out` file.  
 In such case, This script can connect those fragments if the fragments were close each other.  
 By default, if the same two or more repeats are nest to each other without gap, it connects those and report one repeat.  
