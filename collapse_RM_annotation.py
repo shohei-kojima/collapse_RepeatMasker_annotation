@@ -85,7 +85,7 @@ class IntervalNode:
                 self.right=self.right.insert(start, end, score, info)
             else:
                 self.right=IntervalNode(start, end, score, info)
-            # rebalance tree
+            # sort tree
             if self.score < self.right.score:
                 root=self.rotateleft()
         else:
@@ -94,7 +94,7 @@ class IntervalNode:
                 self.left=self.left.insert(start, end, score, info)
             else:
                 self.left=IntervalNode(start, end, score, info)
-            # rebalance tree
+            # sort tree
             if self.score < self.left.score:
                 root=self.rotateright()
         if root.right and root.left:
@@ -140,11 +140,14 @@ class IntervalNode:
     
     def find_top_score(self, start, end):
         if start < self.end and end > self.start:
-            return (self.score, self.info)
-        if self.left and start < self.left.maxend:
-            return self.left.find_top_score(start, end)
-        if self.right and end > self.start:
-            return self.right.find_top_score(start, end)
+            return [(self.score, self.info)]
+        else:
+            res=[]
+            if self.left and start < self.left.maxend:
+                res.extend(self.left.find_top_score(start, end))
+            if self.right and end > self.start:
+                res.extend(self.right.find_top_score(start, end))
+            return res
 
 
 def connect(l):
@@ -177,8 +180,13 @@ def collapse(tmp, chr, gft_id_n):
         for n in range(len(poss) - 1):
             se=poss[n:n + 2]
             result=tree.find_top_score(*se)
-            if not result is None:
-                results.append(Rep(*se, *result))
+            if len(result) == 0:
+                continue
+            elif len(result) == 1:
+                result=result[0]
+            else:
+                result=sorted(result)[-1]  # highest score
+            results.append(Rep(*se, *result))
         connected=connect(results)
     gtf_lines=[]
     bed_lines=[]
@@ -276,15 +284,25 @@ else:
     # for debug
     Rep=collections.namedtuple('Rep', ['start', 'end', 'score', 'info'])
     tree=IntervalTree()
-    tree.insert(100, 200, 55, ('+', 'LTR'))
-    tree.insert(110, 120, 40, ('-', 'SINE'))
-    tree.insert(190, 290, 60, ('-', 'LINE'))
-    tree.insert(195, 300, 80, ('+', 'DNA'))
-    poss=[100, 150, 190, 195, 200, 290, 300]
+    tree.insert(100, 200, 150, ('+', 'LTR'))
+    tree.insert(110, 300, 20, ('-', 'SINE'))
+    tree.insert(120, 290, 100, ('-', 'LINE'))
+    tree.insert(280, 310, 60, ('+', 'DNA'))
+    poss=[100, 110, 120, 200, 280, 290, 300, 310]
     results=[]
     for n in range(len(poss) - 1):
         se=poss[n:n + 2]
         result=tree.find_top_score(*se)
+        if len(result) == 0:
+            continue
+        elif len(result) == 1:
+            result=result[0]
+        else:
+            result=sorted(result)[-1]
         results.append(Rep(*se, *result))
+    for rep in results:
+        print(rep)
+    print()
     final=connect(results)
-    print(final)
+    for rep in final:
+        print(rep)
