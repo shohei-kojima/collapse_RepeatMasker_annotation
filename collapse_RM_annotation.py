@@ -4,7 +4,7 @@
 Author: Shohei Kojima @ RIKEN
 Usage: python %prog -i in.fa.out -o out
 Requirement: Python 3.6 or later
-Licence: see LICENSE file
+License: see LICENSE file
 '''
 
 import os,sys,gzip,datetime,collections,argparse,errno
@@ -26,6 +26,7 @@ parser=argparse.ArgumentParser(description=description)
 parser.add_argument('-i', metavar='str', type=str, help='Specify input genome.fa.out file.', required=True)
 parser.add_argument('-o', metavar='str', type=str, help='Specify output basename. [basename].gtf.gz and [basename].bed.gz will be generated.', required=True)
 parser.add_argument('-gap', metavar='int', type=int, help='Optional. Specify gap distance to connect two TEs belonging to the same repeat. Default: 0', default=0)
+parser.add_argument('-min', metavar='int', type=int, help='Optional. Minimal length of repeat to output. Default: 1', default=1)
 parser.add_argument('-keep_simple_repeat', help='Optional. Specify if you want to keep "Simple_repeat" and "Low_complexity".', action='store_true')
 parser.add_argument('-quiet', help='Optional. Specify if you do not want to output processing status.', action='store_true')
 parser.add_argument('-v', '--version', action='version', version='Version: %s %s' % (os.path.basename(__file__), version))
@@ -85,7 +86,7 @@ class IntervalNode:
                 self.right=self.right.insert(start, end, score, info)
             else:
                 self.right=IntervalNode(start, end, score, info)
-            # sort tree
+            # build heap
             if self.score < self.right.score:
                 root=self.rotateleft()
         else:
@@ -94,7 +95,7 @@ class IntervalNode:
                 self.left=self.left.insert(start, end, score, info)
             else:
                 self.left=IntervalNode(start, end, score, info)
-            # sort tree
+            # build heap
             if self.score < self.left.score:
                 root=self.rotateright()
         if root.right and root.left:
@@ -191,6 +192,8 @@ def collapse(tmp, chr, gft_id_n):
     gtf_lines=[]
     bed_lines=[]
     for _rep in connected:  # start, end, score, info
+        if _rep.end - _rep.start < args.min:
+            continue
         strand,rep_name=_rep.info
         gft_id='RM_%s.%s' % (gft_id_n, rep_name)
         gene_attr='gene_id "%s"; gene_name "%s"; bit_score "%s";' % (gft_id, gft_id, _rep.score)
@@ -235,8 +238,9 @@ def per_chr(reps, gft_id_n):
             tmp=[_rep]
         prev_end=_rep[1]
     gtf_lines,bed_lines,gft_id_n=collapse(tmp, prev_chr, gft_id_n)
-    outgtf.write(''.join(gtf_lines))
-    outbed.write(''.join(bed_lines))
+    if len(bed_lines) >= 1:
+        outgtf.write(''.join(gtf_lines))
+        outbed.write(''.join(bed_lines))
     return gft_id_n
 
 
