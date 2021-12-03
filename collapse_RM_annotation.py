@@ -9,7 +9,14 @@ License: see LICENSE file
 
 import os,sys,gzip,datetime,collections,argparse,errno
 
-version='2021/09/20'
+version='2021/12/03'
+
+'''
+Version log:
+version='2021/09/20': first release
+version='2021/12/03': fixed a small bug for corner cases. Occasionally .fa.out contains strange lines without ID.
+'''
+
 
 description='''
     This script collapses TE annotations from RepeatMasker (i.e. genome.fa.out file).
@@ -260,6 +267,7 @@ if args.testrun is False:
     outbed.write('#format: chr start end name bit_score strand\n')
     
     prev_chr='dummy'
+    prev_id='dummy'
     gft_id_n=0
     Rep=collections.namedtuple('Rep', ['start', 'end', 'score', 'info'])
     with open(args.i) as infile:
@@ -267,6 +275,17 @@ if args.testrun is False:
             next(infile)
         for line in infile:
             ls=line.split()
+            # some fa.out contains strange lines without ID
+            if len(ls) == 15 and ls[-1] == '*':
+                ls=ls[:13]
+                ls.append(prev_id)
+                ls.append('*')
+            elif len(ls) == 14:
+                ls.append(prev_id)
+            elif len(ls) <= 13:
+                print("strange line found. Please check the format again:")
+                print(line, end='')
+                exit(1)
             if ls[10] in remove_simple_low_complex:
                 continue
             _rep=parse_line(ls)
@@ -278,6 +297,7 @@ if args.testrun is False:
                 reps=[_rep]
             else:
                 reps.append(_rep)
+            prev_id=ls[-1]
     gft_id_n=per_chr(reps, gft_id_n)
     
     outgtf.close()
